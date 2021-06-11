@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <p>{{ message }}</p>
+        <div>
+            <input type="text" v-model="foodInput">
+            {{ foodInput }}
+            <button @click="addFoodToList">Add to food</button>
+        </div>
+        <div>
+            <h1>Velg favorittmat</h1>
+            <ul>
+                <li v-for="(food, index) in foods" :key="food">
+                    <input type="checkbox" :id="food" :value="food" v-model="checkedFoods" >
+                    {{ food }} {{ index}}
+                </li>
+            </ul>
+            <div>Dine favoritt retter er: {{ checkedFoods }}</div>
+        </div>
+        <div v-if="foods.length > 0">
+            <h1 >Mat</h1>
+            <ul>
+                <li v-for="food in foods">{{ food }} <button @click="removeFoodFromList(food)">Slett</button></li>
+            </ul>
+            <food-recepie v-if="recepie" :recepie="recepie"></food-recepie>
+        </div>
+    </div>
+
+    <div id="app2">
+        <h1>Personer</h1>
+        <p>{{ message }}</p>
+        <list-item v-for="(person, index) in persons" :key="person + index" :name="person"></list-item>
+
+    </div>
+
+    <script>
+        Vue.component('list-item', {
+            props: ['name'],
+            template: '<li>{{ name }}</li>'
+        })
+
+        Vue.component('food-recepie', {
+            props: ['recepie'],
+            template: '<div><h2>{{recepie.title}}</h2><p>{{recepie.decscription}}</p><ul><li v-for="(item, index) in recepie.ingredients" :key="item + index">{{ item }}</li></ul></div>'
+        })
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+               message: 'Velkommen til vue',
+               foods: ['burger', 'pizza', 'taco'],
+               foodInput: '',
+               showFood: true,
+               checkedFoods: [],
+               recepie: {
+                   title: 'Sjokoladekake',
+                   decscription: 'Enkel å bake',
+                   ingredients: ['sukker', 'mel', 'bakepulver', 'sjokolade']
+               }
+            },
+            methods: {
+                addFoodToList() {
+                  this.foods.push(this.foodInput)
+                  this.foodInput = ''
+                },
+                removeFoodFromList(foodItem) {
+                    this.foods = this.foods.filter(food => food !== foodItem)
+                }
+            }
+        })
+
+        var app2 = new Vue({
+            el: '#app2',
+            data: {
+                message: 'Velkommen til app2',
+                persons: ['arne', 'kalle', 'pelle']
+            }
+        })
+
+
+    </script>
+</body>
+</html>
